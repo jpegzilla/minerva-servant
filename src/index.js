@@ -23,6 +23,7 @@ global.db = db;
 const errorHandler = require("./endpoints/error");
 const insertEndpoint = require("./endpoints/insert");
 const updateEndpoint = require("./endpoints/update");
+const deleteEndpoint = require("./endpoints/delete");
 const emptyCollEndpoint = require("./endpoints/emptycoll");
 
 // middleware setup
@@ -37,6 +38,9 @@ app.use("/insert", insertEndpoint);
 
 // update endpoint
 app.use("/update", updateEndpoint);
+
+// delete endpoint
+app.use("/delete", deleteEndpoint);
 
 // empty collections
 app.use("/emptycoll", emptyCollEndpoint);
