@@ -38,12 +38,22 @@ class Database {
       type == "user" ? this.collections.users : this.collections.data;
 
     // find in table according to type using item.id
-    return new Promise((resolve, reject) => {
-      coll.find({ id: item.id }).toArray((err, items) => {
-        if (err) reject(err);
-        resolve(items);
+
+    if (type == "user") {
+      return new Promise((resolve, reject) => {
+        coll.find({ id: item.id }).toArray((err, items) => {
+          if (err) reject(err);
+          resolve(items);
+        });
       });
-    });
+    } else {
+      return new Promise((resolve, reject) => {
+        coll.find({ userId: item.id }).toArray((err, items) => {
+          if (err) reject(err);
+          resolve(items);
+        });
+      });
+    }
   }
 
   update(item, newItem, type) {
@@ -123,6 +133,17 @@ class Database {
         if (res) resolve(true);
       });
     });
+  }
+
+  destroy() {
+    const collIterator = Object.entries(this.collections);
+
+    for (let [, v] of collIterator) {
+      v.drop((e, r) => {
+        if (e) throw e;
+        else return r;
+      });
+    }
   }
 }
 
