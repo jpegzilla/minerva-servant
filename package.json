@@ -9,8 +9,8 @@
     "dev": "nodemon src/server.js",
     "create": "git pull && npm run deploy",
     "predeploy": "npm install",
-    "deploy": "pm2 delete minerva || true",
-    "postdeploy": "pm2 start src/server.js --name minerva && pm2 start \"mongod -dbpath /home/ec2-user/minerva/minerva-data\""
+    "deploy": "pm2 delete minerva || true && pm2 delete minervadb || true",
+    "postdeploy": "pm2 start src/server.js --name minerva && pm2 start \"mongod -dbpath /home/ec2-user/minerva/minerva-data\" --name minervadb"
   },
   "repository": {
     "type": "git",
