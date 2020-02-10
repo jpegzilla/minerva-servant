@@ -1,14 +1,14 @@
 {
-  "name": "express-boilerplate",
+  "name": "minerva-servant",
   "version": "1.0.0",
-  "description": "",
+  "description": "backend for minerva's akasha",
   "main": "index.js",
   "scripts": {
     "test": "mocha __test__/index.test.js --require __test__/_setup.js",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "create": "git pull && npm run deploy",
-    "predeploy": "npm install && mkdir ./../minerva-data",
+    "predeploy": "npm install && mkdir -p ./../minerva-data",
     "deploy": "pm2 delete minerva || true && pm2 delete minervadb || true",
     "postdeploy": "pm2 start src/server.js --name minerva && pm2 start \"mongod -dbpath ./../minerva-data\" --name minervadb"
   },
