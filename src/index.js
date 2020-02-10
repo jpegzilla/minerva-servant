@@ -24,6 +24,7 @@ const errorHandler = require("./endpoints/error");
 const insertEndpoint = require("./endpoints/insert");
 const updateEndpoint = require("./endpoints/update");
 const deleteEndpoint = require("./endpoints/delete");
+const findEndpoint = require("./endpoints/find");
 const emptyCollEndpoint = require("./endpoints/emptycoll");
 
 // middleware setup
@@ -41,6 +42,9 @@ app.use("/update", updateEndpoint);
 
 // delete endpoint
 app.use("/delete", deleteEndpoint);
+
+// delete endpoint
+app.use("/find", findEndpoint);
 
 // empty collections
 app.use("/emptycoll", emptyCollEndpoint);
