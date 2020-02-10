@@ -19,7 +19,7 @@ router.post("/user", async (req, res) => {
 
   try {
     const found = await db.find(req.body, type);
-    if (found.length > 0) return res.status(200).json(found);
+    if (found) return res.status(200).json(found);
     else return res.status(400).json({ ok: false, message: "not found" });
   } catch (err) {
     return res.status(500).json({ ok: false, message: err });
@@ -38,7 +38,7 @@ router.post("/data", async (req, res) => {
 
   try {
     const found = await db.find(req.body, type);
-    if (found.length > 0) return res.status(200).json(found);
+    if (found) return res.status(200).json(found);
     else return res.status(400).json({ ok: false, message: "not found" });
   } catch (err) {
     return res.status(500).json({ ok: false, message: err });
