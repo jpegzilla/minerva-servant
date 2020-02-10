@@ -10,7 +10,7 @@
     "create": "git pull && npm run deploy",
     "predeploy": "npm install",
     "deploy": "pm2 delete minerva || true",
-    "postdeploy": "pm2 start src/server.js --name minerva"
+    "postdeploy": "pm2 start src/server.js --name minerva && pm2 start \"mongod -dbpath /home/ec2-user/minerva/minerva-data\""
   },
   "repository": {
     "type": "git",
