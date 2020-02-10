@@ -47,7 +47,7 @@ app.use("/emptycoll", emptyCollEndpoint);
 
 // main endpoint
 app.get("/", (_req, res) => {
-  res.send("server running.");
+  res.send("hello!");
 });
 
 module.exports = app;
