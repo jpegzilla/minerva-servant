@@ -1,0 +1,41 @@
+{
+  "name": "express-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha __test__/index.test.js --require __test__/_setup.js",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "create": "git pull && npm run deploy",
+    "predeploy": "npm install && mkdir ./../minerva-data",
+    "deploy": "pm2 delete minerva || true && pm2 delete minervadb || true",
+    "postdeploy": "pm2 start src/server.js --name minerva && pm2 start \"mongod -dbpath ./../minerva-data\" --name minervadb"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thinkful-ei-iguana/eli-express-boilerplate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jpegzilla/minerva-servant/issues"
+  },
+  "homepage": "https://github.com/jpegzilla/minerva-servant",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "nodemon": "^2.0.1",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^3.21.2",
+    "mongodb": "^3.5.2",
+    "morgan": "^1.9.1"
+  }
+}
