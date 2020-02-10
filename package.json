@@ -7,8 +7,9 @@
     "test": "mocha __test__/index.test.js --require __test__/_setup.js",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "predeploy": "npm audit",
-    "deploy": "git push heroku master"
+    "predeploy": "npm install",
+    "deploy": "pm2 delete 'minerva' || true",
+    "postdeploy": "pm2 start npm --name 'minerva' -- start"
   },
   "repository": {
     "type": "git",
