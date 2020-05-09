@@ -18,30 +18,32 @@ module UserOps
       valid_methods = %w[GET POST DELETE PUT PATCH]
 
       unless valid_methods.include? request[:method]
-        return ErrorMessage.make_http_error(400, 'unacceptable method.')
+        return ErrorMessage.make_http_error 405, 'unacceptable method.'
       end
 
       if request[:op].nil?
-        return ErrorMessage.make_http_error(400, 'undefined endpoint.')
+        return ErrorMessage.make_http_error 400, 'undefined endpoint.'
       end
 
       return if respond_to? request[:op]
 
-      ErrorMessage.make_http_error(400, "undefined endpoint '#{request[:op]}.'")
+      ErrorMessage.make_http_error 400, "undefined endpoint '#{request[:op]}.'"
     end
 
     def req(request)
-      validation = validate_request(request)
+      validation = validate_request request
 
       return validation unless validation.nil?
 
       endpoint_loc = request[:op]
 
-      begin
-        method(endpoint_loc).call(request).to_json
-      rescue ArgumentError => e
-        ErrorMessage.make_http_error(400, e.message)
-      end
+      method(endpoint_loc).call(request).to_json
+    rescue ArgumentError => e
+      err = JSON.parse(e.message)
+
+      ErrorMessage.make_http_error(
+        err['status'], err['message'], err['options']
+      )
     end
 
     # starting point for user creation process
@@ -71,7 +73,6 @@ module UserOps
       return { status: 200, response: 'user exists.' } unless existing.nil?
 
       result = @collection.insert_one(user) if existing.nil?
-
       if result.n == 1
         { status: 201, response: 'created new user.', count: result.n }
       else
