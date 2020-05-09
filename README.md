@@ -2,10 +2,6 @@
 
 api for [minerva's akasha](https://github.com/jpegzilla/minervas-akasha)
 
-### api
-
-this api is actually a fully-functioning simple http server written in ruby. I may come back and modularize it a little bit better, so that I can create my own server framework (like javascript's express) in ruby.
-
 ### running
 
 requires ruby.
