@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+desc 'write docs'
+task rdoc: [:check_deps] do
+  puts
+  puts 'writing documenation...'
+  system('rdoc --main ./README.rdoc')
+end
+
 desc 'install dependencies'
 task :install do
   puts
