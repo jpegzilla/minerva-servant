@@ -9,7 +9,7 @@ module Logbook
 
       if break_around
         puts "\r\n#{tag} - #{caller.first}".black.bg_green
-        puts JSON.pretty_generate(data)
+        puts JSON.pretty_generate data
         puts
       else
         puts "#{tag}\r\n#{caller.first}"
