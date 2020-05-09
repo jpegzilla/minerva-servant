@@ -26,16 +26,18 @@ module Api
       request[:op] = request[:url].split('/')[2]
       method_name = "#{endpoint_base}_endpoint_operation"
 
-      show_response(request, endpoint_base, method_name)
+      generate_endpoint_response request, endpoint_base, method_name
     end
 
     # show the correct response for the given endpoint (or the
     # lack of one)
-    def show_response(request, endpoint_base, method_name)
-      if endpoint_base.nil?
+    def generate_endpoint_response(request, endpoint_base, method_name)
+      if request[:data].empty?
+        empty_body_endpoint
+      elsif endpoint_base.nil?
         main_endpoint
       elsif respond_to? method_name
-        method(method_name).call(request)
+        method(method_name).call request
       elsif request[:op].nil?
         not_found_endpoint
       else not_found_endpoint
@@ -50,6 +52,10 @@ module Api
       { status: 404, message: 'resource not found' }.to_json
     end
 
+    def empty_body_endpoint
+      { status: 400, message: 'body must not be empty.' }.to_json
+    end
+
     def user_endpoint_operation(request)
       # initialize mongodb
       Mongo::Logger.logger.level = Logger::FATAL
@@ -57,13 +63,13 @@ module Api
 
       user_interface = UserOps::Crud.new client
 
-      user_interface.req(request)
+      user_interface.req request
     end
 
     def data_endpoint_operation(request)
       user_interface = DataOps::Crud.new 'empty'
 
-      user_interface.req(request)
+      user_interface.req request
     end
   end
 end
