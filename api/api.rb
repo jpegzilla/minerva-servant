@@ -13,8 +13,6 @@ module Api
   # class Api - for handling all api requests
   class ApiResponse
     def initialize(request, database_name)
-      puts 'requesting data from api'
-
       @database = database_name
       @method = request[:method]
       @url = request[:url]
@@ -54,7 +52,9 @@ module Api
 
     def user_endpoint_operation(request)
       # initialize mongodb
+      Mongo::Logger.logger.level = Logger::FATAL
       client = Mongo::Client.new(['127.0.0.1'], database: @database)
+
       user_interface = UserOps::Crud.new client
 
       user_interface.req(request)
