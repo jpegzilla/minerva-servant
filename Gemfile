@@ -4,3 +4,4 @@ source 'https://rubygems.org'
 
 gem 'json'
 gem 'mongo'
+gem 'rdoc'

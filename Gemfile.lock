@@ -5,6 +5,7 @@ GEM
     json (2.3.0)
     mongo (2.12.1)
       bson (>= 4.8.2, < 5.0.0)
+    rdoc (6.1.0)
 
 PLATFORMS
   x64-mingw32
@@ -12,6 +13,7 @@ PLATFORMS
 DEPENDENCIES
   json
   mongo
+  rdoc
 
 BUNDLED WITH
    1.17.3
