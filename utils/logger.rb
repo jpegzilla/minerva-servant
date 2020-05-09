@@ -4,7 +4,7 @@
 module Logbook
   # dev mode logging
   class Dev
-    def self.log_json(data, break_around = true, tag = '')
+    def self.log_json(data, break_around = true, tag = 'info')
       return unless $PROCESS_MODE == 'development'
 
       if break_around
@@ -17,7 +17,7 @@ module Logbook
       end
     end
 
-    def self.log(data, break_around = true, tag = '')
+    def self.log(data, break_around = true, tag = 'info')
       return unless $PROCESS_MODE == 'development'
 
       if break_around
