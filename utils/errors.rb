@@ -14,6 +14,10 @@ module ErrorMessage
     raise ArgumentError, "missing url parameter id to #{method}."
   end
 
+  def self.invalid_structure_error(method, keys)
+    raise ArgumentError, "invalid object with keys #{keys} passed to #{method}."
+  end
+
   def self.make_http_error(status, message)
     error = {
       status: status,
@@ -21,5 +25,15 @@ module ErrorMessage
     }
 
     error.to_json
+  end
+end
+
+# module for multiple custom error classes
+module CustomError
+  # for throwing a server error (like 500)
+  class ServerError < StandardError
+    def initialize(message = 'an internal server error occurred.')
+      super
+    end
   end
 end
