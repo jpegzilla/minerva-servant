@@ -6,6 +6,8 @@ require 'json'
 require_relative 'utils/http_utils'
 require_relative 'api/api'
 
+DATABASE_NAME = 'minerva_db'
+
 # class RequestHandler
 class RequestHandler
   include HTTPUtils
@@ -15,14 +17,16 @@ class RequestHandler
     @session = session
   end
 
-  def handle_request(method, url, protocol)
-    url_main = url.split('?')[0]
+  def handle_request(request)
+    url_main = request[:url].split('?')[0]
 
     request_object = {
-      method: method,
+      method: request[:method],
       url: url_main,
-      params: HTTPUtils::URLUtils.extract_url_params(url),
-      protocol: protocol
+      params: HTTPUtils::URLUtils.extract_url_params(request[:url]),
+      protocol: request[:protocol],
+      headers: request[:headers],
+      data: request[:data]
     }
 
     send_final_response(request_object, 200)
@@ -41,7 +45,7 @@ class RequestHandler
 
   # get the api to respond to a certain request
   def get_api_response(request)
-    api = Api::ApiResponse.new(request)
+    api = Api::ApiResponse.new(request, DATABASE_NAME)
     response_from_api = api.respond(request)
 
     response_from_api
@@ -50,17 +54,17 @@ class RequestHandler
   # main process, allows server to handle requests
   def process(client)
     @request = client.gets
-
     # wait until server isn't recieving anything
-    return until @session.gets ||= ''.chomp.length.zero?
+    return if @session.gets.nil?
+    return if @session.gets.chop.length.zero?
 
-    request_method = @request.split(' ')[0]
-    request_url = @request.split(' ')[1]
-    request_protocol = @request.split(' ')[2]
+    request_made = HTTPUtils.make_proper_request(client, @request)
 
-    return if request_url == '/favicon.ico' # ignore favicon request
+    return if request_made[:url] == '/favicon.ico' # ignore favicon request
 
-    handle_request(request_method, request_url, request_protocol)
+    request_to_handle = HTTPUtils.make_request_object(request_made)
+
+    handle_request(request_to_handle)
   end
 end
 
