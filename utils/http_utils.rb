@@ -42,6 +42,8 @@ module HTTPUtils
     def self.get_req_data(client, headers)
       data = client.read headers['Content-Length'].to_i
 
+      return if data.empty?
+
       Logbook::Dev.log_json(JSON.parse(data), true, 'body data')
 
       data
@@ -59,6 +61,8 @@ module HTTPUtils
   end
 
   def self.make_request_object(req)
+    req[:data] = '{}' if req[:data].nil?
+
     {
       headers: req[:headers],
       data: JSON.parse(req[:data]),
@@ -75,33 +79,47 @@ module HTTPUtils
       @length = length
     end
 
-    def respond(status, response)
-      method("r_#{status}").call
+    def respond(status, response, options)
+      if respond_to? "r_#{status}"
+        method("r_#{status}").call if options.nil?
+        method("r_#{status}").call options unless options.nil?
+      else
+        r_400
+      end
 
       # write a blank line so that the browser
       # knows that the next line is the response
       @session.puts
-
       @session.puts response
-
       @session.close
     end
 
     def r_200
       @session.puts 'HTTP/1.1 200 OK'
       @session.puts 'Content-Type: application/json'
+      @session.puts 'Server: Ruby'
       @session.puts "Content-Length: #{@length}"
     end
 
     def r_400
       @session.puts 'HTTP/1.1 400 Bad Request'
       @session.puts 'Content-Type: application/json'
+      @session.puts 'Server: Ruby'
       @session.puts "Content-Length: #{@length}"
+    end
+
+    def r_405(options)
+      @session.puts 'HTTP/1.1 400 Bad Request'
+      @session.puts 'Content-Type: application/json'
+      @session.puts "Content-Length: #{@length}"
+      @session.puts 'Server: Ruby'
+      @session.puts "Allow: #{options['allowed']}"
     end
 
     def r_500
       @session.puts 'HTTP/1.1 500 Internal Server Error'
       @session.puts 'Content-Type: application/json'
+      @session.puts 'Server: Ruby'
       @session.puts "Content-Length: #{@length}"
     end
   end
