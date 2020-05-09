@@ -28,5 +28,5 @@ task dev: [:check_deps] do
   puts
   puts 'starting server in development mode...'
   puts
-  system('nodemon main.rb')
+  system('nodemon main.rb --development')
 end
