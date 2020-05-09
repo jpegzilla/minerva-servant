@@ -8,15 +8,24 @@ require_relative 'api/api'
 
 DATABASE_NAME = 'minerva_db'
 
-# class RequestHandler
+##
+# this class is made to handle requests coming from
+# a single client on a tcp server.
 class RequestHandler
   include HTTPUtils
   include Api
+
+  ##
+  # initializes with a client socket returned from a +TCPSocket+ object.
 
   def initialize(session)
     @session = session
   end
 
+  ##
+  # handles an incoming request from the open socket in +@session+.
+  # constructs a formatted request object from the original request object, then
+  # calls +send_final_response+ in order to send a response.
   def handle_request(request)
     url_main = request[:url].split('?')[0]
 
