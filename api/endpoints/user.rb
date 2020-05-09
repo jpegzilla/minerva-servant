@@ -12,12 +12,6 @@ module UserOps
     def initialize(db_client)
       @db_interface = db_client.database
       @collection = db_client[:ma_users]
-      # puts
-      # pp @db_interface.collections
-      # puts
-
-      # validate request method
-      # validate request body
     end
 
     def validate_request(request)
@@ -102,8 +96,6 @@ module UserOps
     end
 
     def update(request)
-      puts 'calling update method'
-
       OUtil.check_http_method(request[:method], 'PATCH', __method__)
 
       user = request[:data]
@@ -128,8 +120,6 @@ module UserOps
         update_to_do['$set'][key] = user[key]
       end
 
-      pp update_to_do
-
       update_to_do
     end
 
@@ -146,8 +136,6 @@ module UserOps
     end
 
     def delete(request)
-      puts 'calling delete method'
-
       OUtil.check_http_method(request[:method], 'DELETE', __method__)
 
       user_data = request[:data]
