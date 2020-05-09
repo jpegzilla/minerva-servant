@@ -19,7 +19,7 @@ module DataOps
 
       endpoint_loc = request[:url].split('/')[1]
 
-      method(endpoint_loc).call(request)
+      method(endpoint_loc).call request
     end
 
     def create(user)
