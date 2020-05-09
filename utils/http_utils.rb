@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'logger'
+
+# all utilities for dealing with http-related things
 module HTTPUtils
+  include Logbook
   # class URLUtils - for dealing with urls
   class URLUtils
     def self.extract_url_params(url)
@@ -11,6 +15,8 @@ module HTTPUtils
         url_params = url.split('?')[1].split('&').map do |e|
           key, value = e.split('=')
 
+          break if value.nil?
+
           { key: key, value: value }
         end
       end
@@ -18,6 +24,50 @@ module HTTPUtils
       url_params
     end
   end
+
+  # for dealing with header data.
+  class HeaderUtils
+    def self.get_headers(client)
+      headers = {}
+
+      while (line = client.gets.split(' ', 2))
+        break if line[0] == ''
+
+        headers[line[0].chop] = line[1].strip
+      end
+
+      headers
+    end
+
+    def self.get_req_data(client, headers)
+      data = client.read headers['Content-Length'].to_i
+
+      Logbook::Dev.log(data)
+
+      data
+    end
+  end
+
+  def self.make_proper_request(client, request)
+    headers = HeaderUtils.get_headers(client)
+    data = HeaderUtils.get_req_data(client, headers)
+    method = request.split(' ')[0]
+    url = request.split(' ')[1]
+    proto = request.split(' ')[2]
+
+    { headers: headers, data: data, method: method, url: url, protocol: proto }
+  end
+
+  def self.make_request_object(req)
+    {
+      headers: req[:headers],
+      data: JSON.parse(req[:data]),
+      method: req[:method],
+      url: req[:url],
+      protocol: req[:protocol]
+    }
+  end
+
   # class ServerResponses - for sending HTTP status codes
   class ServerResponse
     def initialize(session, length)
