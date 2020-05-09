@@ -42,7 +42,7 @@ module HTTPUtils
     def self.get_req_data(client, headers)
       data = client.read headers['Content-Length'].to_i
 
-      Logbook::Dev.log(data)
+      Logbook::Dev.log_json(JSON.parse(data), true, 'body data')
 
       data
     end
