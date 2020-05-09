@@ -38,22 +38,21 @@ class RequestHandler
       data: request[:data]
     }
 
-    send_final_response(request_object, 200)
+    send_final_response request_object
   end
 
-  def send_final_response(request_object, status = 200)
-    status = status.to_i
+  def send_final_response(request_object)
+    response_from_api = get_api_response request_object
 
-    begin
-      response_from_api = get_api_response(request_object)
-      response_size = response_from_api.bytesize
+    response_size = response_from_api.bytesize
+    status = JSON.parse(response_from_api)['status']
+    options = JSON.parse(response_from_api)['options']
 
-      responder = HTTPUtils::ServerResponse.new(@session, response_size)
+    responder = HTTPUtils::ServerResponse.new @session, response_size
 
-      responder.respond(status, response_from_api) # send http response
-    rescue StandardError => e
-      { status: 500, response: e }.to_json
-    end
+    responder.respond status, response_from_api, options # send http response
+  rescue StandardError => e
+    { status: 500, response: e }.to_json
   end
 
   # get the api to respond to a certain request
