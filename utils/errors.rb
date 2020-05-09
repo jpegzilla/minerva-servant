@@ -6,6 +6,10 @@ module ErrorMessage
     raise ArgumentError, "invalid key '#{key}' used as parameter to #{method}."
   end
 
+  def self.invalid_http_method_error(key, val, method)
+    raise ArgumentError, "#{key} used to access #{method}. use #{val}."
+  end
+
   def self.missing_arguments_error(method)
     raise ArgumentError, "missing arguments to #{method}"
   end
@@ -19,10 +23,14 @@ module ErrorMessage
   end
 
   def self.make_http_error(status, message)
-    error = {
-      status: status,
-      message: message
-    }
+    error = { status: status }
+
+    case status.to_s.chr.to_i
+    when 4
+      error[:message] = "bad request: #{message}"
+    when 5
+      error[:message] = "server error: #{message}"
+    end
 
     error.to_json
   end
