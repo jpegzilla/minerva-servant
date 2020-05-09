@@ -14,8 +14,16 @@ module OUtil
   end
 
   # make sure a key is the correct value
-  def self.check_key(key, name, method)
-    raise ErrorMessage.invalid_key_error(method, key) if key != name
+  def self.check_key(key, value, method)
+    return if key == value
+
+    raise ErrorMessage.invalid_key_error(method, key)
+  end
+
+  def self.check_http_method(key, value, method)
+    return if key == value
+
+    raise ErrorMessage.invalid_http_method_error(key, value, method)
   end
 
   def check_key_type(object, key, type, method)
@@ -28,13 +36,14 @@ module OUtil
     key_bank = []
 
     keys.each do |key|
-      break unless valid_keys.include? key
+      break unless valid_keys.keys.include? key.to_sym
+      break unless key.is_a? valid_keys[key.to_sym]
 
       key_bank.push key
     end
 
     return if key_bank.length == valid_keys.length
 
-    raise ErrorMessage.invalid_structure_error(method, key_bank)
+    raise ErrorMessage.invalid_structure_error(method, "(#{keys.join(', ')})")
   end
 end
