@@ -35,12 +35,16 @@ class RequestHandler
   def send_final_response(request_object, status = 200)
     status = status.to_i
 
-    response_from_api = get_api_response(request_object)
-    response_size = response_from_api.bytesize
+    begin
+      response_from_api = get_api_response(request_object)
+      response_size = response_from_api.bytesize
 
-    responder = HTTPUtils::ServerResponse.new(@session, response_size)
+      responder = HTTPUtils::ServerResponse.new(@session, response_size)
 
-    responder.respond(status, response_from_api) # send http response
+      responder.respond(status, response_from_api) # send http response
+    rescue StandardError => e
+      { status: 500, response: e }.to_json
+    end
   end
 
   # get the api to respond to a certain request
