@@ -72,7 +72,7 @@ module HTTPUtils
     }
   end
 
-  # class ServerResponses - for sending HTTP status codes
+  # class ServerResponses - for sending HTTP responses
   class ServerResponse
     def initialize(session, length)
       @session = session
